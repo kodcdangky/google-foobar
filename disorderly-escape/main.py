@@ -6,19 +6,18 @@ class polynomial(list):
     """
     Represents polynomials as a list of list, supports addition and multiplication
     """
+
     def __init__(self, expression):
         self = super(polynomial, self).__init__(expression)
 
     def __add__(self, other):
         poly_sum = deepcopy(self).extend(other)
         polynomial.condense(poly_sum)
-        polynomial.sort(poly_sum)
         return poly_sum
 
     def __iadd__(self, other):
         self.extend(other)
         polynomial.condense(self)
-        polynomial.sort(self)
         return self
 
     def __mul__(self, other):
@@ -40,7 +39,6 @@ class polynomial(list):
 
         polynomial.condense(self)
         polynomial.condense(poly_product)
-        polynomial.sort(poly_product)
         return poly_product
 
     @classmethod
