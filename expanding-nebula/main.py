@@ -5,10 +5,10 @@ def solution(g):
     def build_count_valid_parents(next_cell):
         global valid
         row, col = next_cell
-        adjacents = adjacency_table[row][col]
-        for config in config_table[len(adjacents)]:
-            for (adj_row, adj_col), value in zip(adjacents, config):
-                parent[adj_row][adj_col] = value
+        offset = offset_table[bool(row) * 2 + bool(col)]
+        for config in config_table[len(offset)]:
+            for (row_offset, col_offset), value in zip(offset, config):
+                parent[row + row_offset][col + col_offset] = value
 
             if (
                 g[row][col]
@@ -43,19 +43,13 @@ def solution(g):
                 (row, col + 1) if col < len(g[0]) - 1 else (row + 1, 0)
             )
 
-    def new_adjacency_cell_table():
-        table = []
-        for row_index in range(len(g)):
-            table.append([])
-            for col_index in range(len(g[row_index])):
-                table[-1].append([(row_index + 1, col_index + 1)])
-                if row_index == 0:
-                    table[-1][-1].append((row_index, col_index + 1))
-                if col_index == 0:
-                    table[-1][-1].append((row_index + 1, col_index))
-                if row_index == col_index == 0:
-                    table[-1][-1].append((row_index, col_index))
-        return table
+    def new_offset_table():
+        return (
+            ((0, 0), (0, 1), (1, 0), (1, 1)),
+            ((0, 1), (1, 1)),
+            ((1, 0), (1, 1)),
+            ((1, 1),),
+        )
 
     def new_config_table():
         table = [()]
@@ -65,8 +59,7 @@ def solution(g):
 
     global valid
     valid = 0
-
-    adjacency_table = new_adjacency_cell_table()
+    offset_table = new_offset_table()
     config_table = new_config_table()
     parent = [[None for _ in range(len(g[0]) + 1)] for _ in range(len(g) + 1)]
     build_count_valid_parents((0, 0))
