@@ -29,4 +29,3 @@ def test():
 
 
 test()
-# print(sum((True, False, True)))
