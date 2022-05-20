@@ -5,8 +5,8 @@ def solution(g):
     def build_count_valid_parents(next_cell):
         global valid
         row, col = next_cell
-        offset = offset_table[0 if (row, col) == (len(g) - 1, len(g[-1]) - 1) else 1 if row == len(g) - 1 else 2 if col == len(g[row]) - 1 else 3]
-        for config in config_table[len(offset)]:
+        offset = offset_table[(row == len(g) - 1) * 2 + (col == len(g[row]) - 1)]
+        for config in config_table[len(offset) - 1]:
             for (row_offset, col_offset), value in zip(offset, config):
                 parent[row + row_offset][col + col_offset] = value
 
@@ -45,14 +45,14 @@ def solution(g):
 
     def new_offset_table():
         return (
-            ((0, 0), (0, 1), (1, 0), (1, 1)),
-            ((0, 0), (1, 0)),
-            ((0, 0), (0, 1)),
             ((0, 0),),
+            ((0, 0), (0, 1)),
+            ((0, 0), (1, 0)),
+            ((0, 0), (0, 1), (1, 0), (1, 1)),
         )
 
     def new_config_table():
-        table = [()]
+        table = []
         for length in range(1, 5):
             table.append(tuple(product((False, True), repeat=length)))
         return table
