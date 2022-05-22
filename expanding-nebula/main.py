@@ -2,65 +2,20 @@ from itertools import product
 
 
 def solution(g):
-    def build_count_valid_parents(next_cell):
-        global valid
-        row, col = next_cell
-        offset = offset_table[(row == len(g) - 1) * 2 + (col == len(g[row]) - 1)]
-        for config in config_table[len(offset) - 1]:
-            for (row_offset, col_offset), value in zip(offset, config):
-                parent[row + row_offset][col + col_offset] = value
+    def build_by_column(next_col):
+        def build_valid_column(col):
+            pass
 
-            if (
-                g[row][col]
-                and sum(
-                    (
-                        parent[row][col],
-                        parent[row][col + 1],
-                        parent[row + 1][col],
-                        parent[row + 1][col + 1],
-                    )
-                )
-                != 1
-            ) or (
-                not g[row][col]
-                and sum(
-                    (
-                        parent[row][col],
-                        parent[row][col + 1],
-                        parent[row + 1][col],
-                        parent[row + 1][col + 1],
-                    )
-                )
-                == 1
-            ):
-                continue
+    def new_cell_config_table():
+        return tuple(product((False, True), repeat=2)), tuple(product((False, True), repeat=4))
 
-            if row == col == 0:
-                valid += 1
-                continue
+    def new_cell_offset_table():
+        return ((1, 0), (1, 1)), tuple(product((0, 1), repeat=2))
 
-            build_count_valid_parents(
-                (row, col - 1) if col > 0 else (row - 1, len(g[row - 1]) - 1)
-            )
 
-    def new_offset_table():
-        return (
-            ((0, 0),),
-            ((0, 0), (0, 1)),
-            ((0, 0), (1, 0)),
-            ((0, 0), (0, 1), (1, 0), (1, 1)),
-        )
-
-    def new_config_table():
-        table = []
-        for length in range(1, 5):
-            table.append(tuple(product((False, True), repeat=length)))
-        return table
-
-    global valid
-    valid = 0
-    offset_table = new_offset_table()
-    config_table = new_config_table()
+    config_count = [{} for _ in g[0]]
+    cell_config_table = new_cell_config_table()
+    cell_offset_table = new_cell_offset_table()
     parent = [[None for _ in range(len(g[0]) + 1)] for _ in range(len(g) + 1)]
-    build_count_valid_parents((len(g) - 1, len(g[-1]) - 1))
-    return valid
+    build_by_column(0)
+    return sum(config_count[0])
