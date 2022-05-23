@@ -27,5 +27,8 @@ def test():
     print(output)
     assert output == 254
 
+    input = [[False for _ in range(50)] for _ in range(9)]
+    print(solution(input))
+
 
 test()
