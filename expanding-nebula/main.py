@@ -4,9 +4,7 @@ from itertools import product
 
 def solution(g):
     def new_cell_config_table():
-        return tuple(product((False, True), repeat=4)), tuple(
-            product((False, True), repeat=2)
-        ), tuple(product((False, True), repeat=1))
+        return tuple(tuple(product((False, True), repeat=repeat)) for repeat in (4, 2, 1))
 
     def new_kernel_sum_table():
         return {kernel: sum(kernel) == 1 for kernel in product((False, True), repeat=4)}
@@ -16,7 +14,7 @@ def solution(g):
             if g[0][0] != kernel_sum_table[config0]:
                 continue
             col = [config0[:2], config0[2:]]
-            col.extend(None for _ in range(len(g) - 1))
+            col.extend(() for _ in range(len(g) - 1))
             cell_stack = [(1, config) for config in cell_config_table[1]]
             while cell_stack:
                 row_index, config = cell_stack.pop()
