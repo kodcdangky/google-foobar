@@ -47,7 +47,7 @@ class polynomial(list):
         Condenses polynomial expression by merging exponent groups, then sort descending by exponents
 
         Args:
-            poly (list): variable groups
+            poly (list): exponent groups
         """
         for i, elem_i in zip(reversed(range(len(poly) - 1)), reversed(poly[:-1])):
             if elem_i[0] == 0:
@@ -55,7 +55,7 @@ class polynomial(list):
                 continue
             while elem_i[-1] == 0:
                 elem_i.pop()
-            for j, elem_j in zip(reversed(range(len(poly))), reversed(poly[i + 1 :])):
+            for j, elem_j in zip(reversed(range(len(poly))), reversed(poly[i + 1:])):
                 if elem_i[1:] == elem_j[1:]:
                     elem_i[0] += elem_j[0]
                     poly.pop(j)
