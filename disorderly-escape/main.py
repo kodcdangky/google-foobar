@@ -37,12 +37,11 @@ class polynomial(list):
                     new_elem.append(elem[i_elem] + elem_other[i_other])
                 poly_product.append(new_elem)
 
-        polynomial.condense(self)
         polynomial.condense(poly_product)
         return poly_product
 
-    @classmethod
-    def condense(cls, poly):
+    @staticmethod
+    def condense(poly):
         """
         Condenses polynomial expression by merging exponent groups, then sort descending by exponents
 
@@ -61,8 +60,8 @@ class polynomial(list):
                     poly.pop(j)
         polynomial.sort(poly)
 
-    @classmethod
-    def sort(cls, poly):
+    @staticmethod
+    def sort(poly):
         poly = sorted(poly, key=lambda elem: sum(elem[1:]), reverse=True)
 
 
