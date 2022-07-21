@@ -1,9 +1,9 @@
 import decimal
 
-D = decimal.Decimal
 decimal.getcontext().prec = 102
-TWO = D(2)
-COMPLEMENTARY = TWO + TWO.sqrt()
+TWO = decimal.Decimal(2)
+ORIGINAL = TWO.sqrt()
+COMPLEMENTARY = ORIGINAL / (ORIGINAL - 1)
 
 
 def solution(s):
@@ -11,7 +11,7 @@ def solution(s):
         return "0"
 
     n = int(s)
-    largest = int(n * TWO.sqrt())
+    largest = int(n * ORIGINAL)
     complementary_highest_index = int(largest // COMPLEMENTARY)
 
     return str(
