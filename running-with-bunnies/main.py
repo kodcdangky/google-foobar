@@ -38,12 +38,12 @@ def solution(times, time_limit):
                 next_node not in unique_bunnies
                 and time_remaining - cost - min_cost[next_node][-1] >= 0
             ):
-                tracker_node = next_node
-                while tracker_node != node:
-                    if tracker_node in range(1, len(times) - 1):
-                        unique_bunnies.add(tracker_node)
-                    tracker_node = previous[node][tracker_node]
-
+                # tracker_node = next_node
+                # while tracker_node != node:
+                #     if tracker_node in range(1, len(times) - 1):
+                #         unique_bunnies.add(tracker_node)
+                #     tracker_node = previous[node][tracker_node]
+                unique_bunnies.add(next_node)
                 node = next_node
                 time_remaining -= cost
                 break
