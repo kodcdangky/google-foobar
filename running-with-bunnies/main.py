@@ -12,11 +12,10 @@ def bellman_ford(times):
                         min_cost[node][dest] = min_cost[node][step] + cost
                         previous[node][dest] = step
 
-    for node, _ in enumerate(times):
-        for step, costs in enumerate(times):
-            for dest, cost in enumerate(costs):
-                if min_cost[node][dest] > min_cost[node][step] + cost:
-                    return float("-inf")
+    for step, costs in enumerate(times):
+        for dest, cost in enumerate(costs):
+            if min_cost[0][dest] > min_cost[0][step] + cost:
+                return float("-inf"), None
 
     return min_cost, previous
 
@@ -26,8 +25,8 @@ def solution(times, time_limit):
     if min_cost == float("-inf"):
         return list(range(len(times) - 2))
 
-    unique_bunnies = set()
-    time_remaining = time_limit
+    visited = set()
+    budget = time_limit
     node = 0
     while True:
         for next_node, cost in sorted(
@@ -35,18 +34,18 @@ def solution(times, time_limit):
             key=lambda index_and_cost: index_and_cost[1],
         ):
             if (
-                next_node not in unique_bunnies
-                and time_remaining - cost - min_cost[next_node][-1] >= 0
+                next_node not in visited
+                and budget - cost - min_cost[next_node][-1] >= 0
             ):
-                # tracker_node = next_node
-                # while tracker_node != node:
-                #     if tracker_node in range(1, len(times) - 1):
-                #         unique_bunnies.add(tracker_node)
-                #     tracker_node = previous[node][tracker_node]
-                unique_bunnies.add(next_node)
+                tracer = next_node
+                while tracer != node:
+                    if tracer in range(1, len(times) - 1):
+                        visited.add(tracer)
+                    tracer = previous[node][tracer]
+
                 node = next_node
-                time_remaining -= cost
+                budget -= cost
                 break
         else:
             break
-    return sorted(map(lambda index: index - 1, unique_bunnies))
+    return sorted(map(lambda node: node - 1, visited))
