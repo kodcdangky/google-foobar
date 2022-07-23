@@ -40,12 +40,10 @@ def solution(times, time_limit):
                 and budget - cost - min_cost[next_node][-1] >= 0
             ):
                 tracer = node
-                while True:
+                while tracer != next_node:
+                    tracer = next_in_path[tracer][next_node]
                     if tracer in range(1, len(times) - 1):
                         visited.add(tracer)
-                    if tracer == next_node:
-                        break
-                    tracer = next_in_path[tracer][next_node]
 
                 node = next_node
                 budget -= cost
