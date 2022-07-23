@@ -1,27 +1,29 @@
-def bellman_ford(times):
-    min_cost = [[float("inf") for _ in times] for _ in times]
-    previous = [[None for _ in times] for _ in times]
-    for index, _ in enumerate(min_cost):
-        min_cost[index][index] = 0
+from copy import deepcopy
 
-    for node, _ in enumerate(times):
-        for _ in times[:-1]:
-            for step, costs in enumerate(times):
-                for dest, cost in enumerate(costs):
-                    if min_cost[node][dest] > min_cost[node][step] + cost:
-                        min_cost[node][dest] = min_cost[node][step] + cost
-                        previous[node][dest] = step
 
-    for step, costs in enumerate(times):
-        for dest, cost in enumerate(costs):
-            if min_cost[0][dest] > min_cost[0][step] + cost:
-                return float("-inf"), None
+def floyd_warshall(times):
+    min_cost = deepcopy(times)
+    next_in_path = [[None for _ in times] for _ in times]
+    for node, _ in enumerate(next_in_path):
+        for next_node, _ in enumerate(next_in_path[node]):
+            next_in_path[node][next_node] = next_node
 
-    return min_cost, previous
+    for step, _ in enumerate(min_cost):
+        for start, _ in enumerate(min_cost):
+            for dest, _ in enumerate(min_cost):
+                if min_cost[start][dest] > min_cost[start][step] + min_cost[step][dest]:
+                    min_cost[start][dest] = min_cost[start][step] + min_cost[step][dest]
+                    next_in_path[start][dest] = next_in_path[start][step]
+
+    for node, _ in enumerate(min_cost):
+        if min_cost[node][node] < 0:
+            return float("-inf"), None
+
+    return min_cost, next_in_path
 
 
 def solution(times, time_limit):
-    min_cost, previous = bellman_ford(times)
+    min_cost, next_in_path = floyd_warshall(times)
     if min_cost == float("-inf"):
         return list(range(len(times) - 2))
 
@@ -37,11 +39,13 @@ def solution(times, time_limit):
                 next_node not in visited
                 and budget - cost - min_cost[next_node][-1] >= 0
             ):
-                tracer = next_node
-                while tracer != node:
+                tracer = node
+                while True:
                     if tracer in range(1, len(times) - 1):
                         visited.add(tracer)
-                    tracer = previous[node][tracer]
+                    if tracer == next_node:
+                        break
+                    tracer = next_in_path[tracer][next_node]
 
                 node = next_node
                 budget -= cost
